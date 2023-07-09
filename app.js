@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: '*', // 출처 허용 옵션
+    origin: 'http://tenenger7125-486-shoe-shop-client.s3-website.ap-northeast-2.amazonaws.com', // 출처 허용 옵션
     credential: 'true', // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
   })
 );
