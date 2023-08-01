@@ -14,23 +14,19 @@ const corsOptions = {
     // 만일 (모바일, 로컬환경) 접속해서 origin이 없는 경우
     if (!origin) return callback(null, true); // cors 허용
 
-    if (whiteList.indexOf(origin) !== -1) {
-      // 만일 whitelist 배열에 origin인자가 있을 경우
-      callback(null, true); // cors 허용
-    } else {
-      callback(new Error('Not Allowed Origin!')); // cors 비허용
-    }
+    // 만일 whitelist 배열에 origin인자가 있을 경우
+    if (whiteList.indexOf(origin) !== -1) callback(null, true); // cors 허용
+    else callback(new Error('Not allowed by CORS')); // cors 거부
   },
-  credential: true,
+  credentials: true,
 };
 
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors(corsOptions));
 
-app.use('/api', api);
+app.use('/api', cors(corsOptions), api);
 
 mongooseConnect(() => {
   app.listen(PORT, async () => {
