@@ -30,7 +30,7 @@ router.post('/signin', async (req, res) => {
   res.cookie('accessToken', accessToken, {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7d
     httpOnly: true,
-    sameSite: 'none',
+    secure: true,
   });
 
   // 로그인 성공
