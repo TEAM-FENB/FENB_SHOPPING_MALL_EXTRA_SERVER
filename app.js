@@ -8,7 +8,7 @@ require('dotenv').config();
 const app = express();
 const api = require('./routes/api');
 const PORT = process.env.PORT || 8000;
-const whiteList = ['http://localhost:5173', 'https://486-shoe.shop'];
+const whiteList = ['http://localhost:5173', 'https://486-shoe.shop', 'https://www.486-shoe.shop'];
 const corsOptions = {
   origin(origin, callback) {
     // 만일 (모바일, 로컬환경) 접속해서 origin이 없는 경우

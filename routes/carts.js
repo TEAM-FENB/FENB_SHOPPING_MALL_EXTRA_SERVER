@@ -33,8 +33,20 @@ router.post('/me/:id', authCheck, cartStockCheck, async (req, res) => {
     return res.status(406).send({ message: '상품의 재고가 없습니다. 수량을 다시 선택해주세요' });
 
   const cart = await createUserCart(email, id, size, quantity);
-
   res.send(cart);
+});
+
+router.post('/quantity', authCheck, cartStockCheck, async (req, res) => {
+  const { carts } = req.locals;
+
+  for (let i = 0; i < carts.length; i++) {
+    const stock = await getProductStockBySize(carts[i].productId, carts[i].size);
+
+    if (stock.quantity < carts[i].quantity)
+      return res.status(406).send({ message: '상품의 재고가 없습니다. 수량을 다시 선택해주세요' });
+  }
+
+  res.send({ message: '장바구니 상품들의 수량을 모두 확인했습니다.' });
 });
 
 // cart 변경
