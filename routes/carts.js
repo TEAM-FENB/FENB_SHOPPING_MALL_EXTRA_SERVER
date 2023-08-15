@@ -32,8 +32,8 @@ router.post('/me/:id', authCheck, cartStockCheck, async (req, res) => {
   if (stock.quantity < selectedQuantity)
     return res.status(406).send({ message: '상품의 재고가 없습니다. 수량을 다시 선택해주세요' });
 
-  const cart = await createUserCart(email, id, size, quantity);
-  res.send(cart);
+  await createUserCart(email, id, size, quantity);
+  res.send({ message: '상품을 성공적으로 추가했습니다' });
 });
 
 router.post('/quantity', authCheck, cartStockCheck, async (req, res) => {
