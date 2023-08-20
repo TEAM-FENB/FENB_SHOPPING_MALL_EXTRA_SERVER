@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongodb');
+const { getDateAfter } = require('../utils/date');
 const { User, Coupon } = require('../models/shop');
 
 const createCoupon = async coupon => {
@@ -17,6 +17,7 @@ const createUserCoupon = async (email, _id) => {
   try {
     const coupon = await Coupon.findOne({ _id }).lean();
     coupon.couponId = coupon._id;
+    coupon.expireTime = getDateAfter(coupon.validDate);
     delete coupon._id;
 
     const user = await User.findOneAndUpdate({ email }, { $push: { coupons: coupon } }, { new: true });
@@ -86,7 +87,7 @@ const deleteExpiredUserCoupon = async email => {
   try {
     const userCoupon = await User.findOneAndUpdate(
       { email },
-      { $pull: { coupons: { endTime: { $lt: new Date().getTime() } } } },
+      { $pull: { coupons: { expireTime: { $lt: new Date().getTime() } } } },
       { new: true }
     );
 

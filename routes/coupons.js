@@ -3,6 +3,8 @@ const router = require('express').Router();
 const { authCheck } = require('../middleware/auth');
 const { expireCoupon } = require('../middleware/coupon');
 const { getCoupon, createUserCoupon } = require('../controllers/coupons');
+const { getUser } = require('../controllers/users');
+const { getDateAfter } = require('../utils/date');
 
 router.get('/', authCheck, expireCoupon, async (req, res) => {
   // OK!
@@ -20,16 +22,19 @@ router.post('/:id', authCheck, expireCoupon, async (req, res) => {
   const coupon = await getCoupon(couponId);
   if (!coupon) return res.status(404).send({ message: '요청하신 쿠폰이 없습니다.' });
 
-  if (coupon.endTime < new Date().getTime())
-    return res.status(401).send({ message: '쿠폰 받는 유효기간이 지났습니다.' });
+  const user = getUser(email);
 
-  // ❗ 쿠폰 개수 제한 기능 다시 해보기
-  // const couponsHistory = getCouponHistory(email, couponId);
-  // if (couponsHistory && couponsHistory.count === coupon.limit)
-  //   return res.status(403).send({ message: '더이상 발급 받으실 수 없습니다.' });
+  if (
+    '64a051f8a1df112941c05596' === couponId &&
+    getDateAfter(coupon.validDate, user.createdAt) < new Date().getTime()
+  ) {
+    // 신규가입 쿠폰을 발급
+    return res.status(401).send({ message: '쿠폰 받는 유효기간이 지났습니다.' });
+  } else if (coupon.endTime < new Date().getTime()) {
+    return res.status(401).send({ message: '쿠폰 받는 유효기간이 지났습니다.' });
+  }
 
   createUserCoupon(email, couponId);
-  // addCouponHistory(email, couponId);
 
   res.send({ message: '쿠폰이 정상발급되었습니다.' });
 });

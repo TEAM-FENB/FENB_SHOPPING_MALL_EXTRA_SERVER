@@ -51,9 +51,10 @@ const CouponSchema = new mongoose.Schema({
   minimumPrice: Number,
   endTime: Number,
   limit: Number,
+  validDate: Number,
 });
 
-const UserCouponSchema = CouponSchema.add({ couponId: mongoose.Types.ObjectId });
+const UserCouponSchema = CouponSchema.add({ couponId: mongoose.Types.ObjectId, expireTime: Number });
 
 const SlideSchema = new mongoose.Schema({
   couponId: mongoose.Types.ObjectId,

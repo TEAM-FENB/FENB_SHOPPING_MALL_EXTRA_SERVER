@@ -1,5 +1,4 @@
-const getDateAfter = number => {
-  const date = new Date();
+const getDateAfter = (number, date = new Date()) => {
   date.setDate(date.getDate() + number);
 
   return date;
